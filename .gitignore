@@ -1,0 +1,56 @@
+# --- Android / Gradle build output ---
+*.iml
+.gradle
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+/.kotlin
+.kotlin
+
+# --- IDE ---
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.idea/
+*.hprof
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# --- Signing and secrets (never commit) ---
+*.jks
+*.keystore
+keystore.properties
+secrets.properties
+# Firebase config carries an API key, so it is a secret too. In CI it is written from the
+# GOOGLE_SERVICES_JSON secret before the build.
+app/google-services.json
+.env
+.env.*
+!.env.example
+
+# --- AI agent artifacts ---
+# Everything below is tooling for AI coding assistants, not part of the app.
+CLAUDE.md
+AGENTS.md
+.claude/
+.agents/
+.cursor/
+.cursorrules
+.aider*
+.github/copilot*
+skills-lock.json
+*.skill
+*.skills
+
+# --- Generated docs / reports ---
+build/reports/

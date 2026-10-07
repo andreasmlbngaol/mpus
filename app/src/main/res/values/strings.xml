@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">mpus</string>
+
+    <!-- Navigation -->
+    <string name="tab_map">Map</string>
+    <string name="tab_snap">Snap</string>
+    <string name="tab_you">You</string>
+
+    <!-- Common actions / content descriptions -->
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_done">Done</string>
+    <string name="action_retry">Try again</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_like">Like</string>
+
+    <!-- Auth -->
+    <string name="auth_title">mpus</string>
+    <string name="auth_sign_in">Sign in</string>
+    <string name="auth_sign_up">Sign up</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_show">Show</string>
+    <string name="auth_hide">Hide</string>
+    <string name="auth_username">Username</string>
+    <string name="auth_username_hint">3-30 chars: letters, numbers, _ .</string>
+    <string name="auth_display_name">Nickname</string>
+    <string name="auth_create_account">Create account</string>
+    <string name="auth_err_missing_credentials">Email and password, please.</string>
+    <string name="auth_err_incomplete">Fill everything in. Password needs 8+, username 3+.</string>
+    <string name="auth_err_network">Network hiccup. Try again.</string>
+
+    <!-- Verify screen (an unverified account is held here after signing in) -->
+    <string name="verify_title">Check your inbox</string>
+    <string name="verify_body">We sent a 6-digit code to %1$s. Type it below.</string>
+    <string name="verify_code">6-digit code</string>
+    <string name="verify_confirm">Verify</string>
+    <string name="verify_resend">Resend code</string>
+    <string name="verify_done">Verified. Welcome in.</string>
+    <string name="verify_err">That didn\'t work. Try again.</string>
+
+    <!-- Map -->
+    <string name="map_title">mpus</string>
+    <string name="map_refresh">Refresh</string>
+    <string name="map_recenter">Recenter</string>
+    <string name="map_no_location">No location yet. Turn it on and try again.</string>
+    <string name="map_unnamed_marker">Unnamed cat</string>
+    <string name="map_unnamed_cat">This cat needs a name</string>
+    <string name="map_open_cat">See names and photos</string>
+    <string name="map_err_load">Couldn\'t load the map.</string>
+    <plurals name="sighting_count">
+        <item quantity="one">%1$d sighting</item>
+        <item quantity="other">%1$d sightings</item>
+    </plurals>
+    <plurals name="sighting_count_around">
+        <item quantity="one">%1$d sighting around here</item>
+        <item quantity="other">%1$d sightings around here</item>
+    </plurals>
+
+    <!-- Cat detail -->
+    <string name="cat_title">Cat</string>
+    <string name="cat_not_named">Not named yet</string>
+    <string name="cat_photos">Photos</string>
+    <string name="cat_stat_sightings">Sightings</string>
+    <string name="cat_stat_names">Names</string>
+    <string name="cat_names">Names</string>
+    <string name="cat_no_names">No names yet. Be the first.</string>
+    <string name="cat_suggest_name">Suggest a name</string>
+    <string name="cat_meet_to_name">Snap this cat yourself to name it. You can only name a cat you\'ve met.</string>
+    <string name="cat_save_name">Save my name</string>
+    <string name="cat_by">by %1$s</string>
+    <string name="cat_unnamed">Unnamed</string>
+    <string name="cat_err_load">Couldn\'t load this cat.</string>
+    <string name="cat_name_saved">Name saved.</string>
+    <string name="cat_err_save_name">Couldn\'t save that name.</string>
+    <string name="cat_err_like">Couldn\'t register that like.</string>
+    <string name="cat_reviews">Reviews</string>
+    <string name="cat_no_reviews">No reviews yet. Got an opinion?</string>
+    <string name="cat_review_hint">How is this cat, really?</string>
+    <string name="cat_review_rating">Rating</string>
+    <string name="cat_review_save">Post review</string>
+    <string name="cat_review_saved">Review posted.</string>
+    <string name="cat_err_review">Couldn\'t post that review.</string>
+    <string name="cat_review_rating_value">%1$d/10</string>
+    <plurals name="cat_sighting_count">
+        <item quantity="one">%1$d sighting</item>
+        <item quantity="other">%1$d sightings</item>
+    </plurals>
+
+    <!-- Snap / sightings -->
+    <string name="snap_title">Snap a cat</string>
+    <string name="snap_found">Found a cat?</string>
+    <string name="snap_hint">Snap it. We\'ll check if anyone already named this one.</string>
+    <string name="snap_open_camera">Open camera</string>
+    <string name="cd_your_cat_photo">Your cat photo</string>
+    <string name="snap_locating">Finding your location…</string>
+    <string name="snap_located">Location locked in</string>
+    <string name="snap_no_location">No location yet</string>
+    <string name="snap_retake">Retake</string>
+    <string name="snap_identify">Identify this cat</string>
+    <string name="snap_who">Who is this?</string>
+    <string name="snap_no_matches">No matches yet. You get to name this cat first.</string>
+    <string name="snap_possible">Possible matches. Same cat, or a doppelganger?</string>
+    <string name="snap_new_cat">Or start a new cat</string>
+    <string name="snap_name_label">Name this cat</string>
+    <string name="snap_create">Create new cat</string>
+    <string name="snap_similar">%1$d%% similar</string>
+    <string name="snap_same_cat">Same cat</string>
+    <string name="snap_view">View</string>
+    <string name="snap_saved_title">Saved to the map</string>
+    <string name="snap_saved_body">This sighting now belongs to that cat.</string>
+    <string name="snap_open_cat">Open cat</string>
+    <string name="snap_another">Snap another</string>
+    <string name="snap_err_no_photo">Take a photo first.</string>
+    <string name="snap_err_no_location">Need a location fix first.</string>
+    <string name="snap_err_no_fix">No location fix yet. Turn on location, then tap retry.</string>
+    <string name="snap_err_upload">Upload failed. Try again.</string>
+    <string name="snap_err_no_camera">Camera access is off. Allow it in Settings to snap a cat.</string>
+    <string name="snap_linked">Nice one. That cat\'s on the map.</string>
+    <string name="snap_err_resolve">Couldn\'t save that.</string>
+
+    <!-- Profile -->
+    <string name="profile_title">You</string>
+    <string name="profile_add_photo">Add\nphoto</string>
+    <string name="profile_placeholder">-</string>
+    <string name="profile_handle">@%1$s</string>
+    <string name="profile_edit">Edit profile</string>
+    <string name="profile_sign_out">Sign out</string>
+    <string name="profile_your_sightings">Your sightings</string>
+    <string name="profile_stat_sightings">Sightings</string>
+    <string name="profile_stat_cats">Cats</string>
+    <string name="profile_stat_unnamed">Unnamed</string>
+    <string name="profile_section_recent">Recent</string>
+    <string name="profile_empty">Nothing yet. Go snap a cat.</string>
+    <string name="profile_err_load">Couldn\'t load your sightings.</string>
+    <string name="profile_updated">Profile updated.</string>
+    <string name="profile_err_save">Couldn\'t save that.</string>
+    <string name="profile_avatar_done">Looking sharp.</string>
+    <string name="profile_avatar_removed">Photo removed.</string>
+    <string name="profile_err_avatar">Couldn\'t upload that photo.</string>
+    <string name="profile_err_avatar_delete">Couldn\'t remove that photo.</string>
+    <string name="profile_photo_actions">Profile photo</string>
+    <string name="profile_action_view">View photo</string>
+    <string name="profile_action_upload">Upload from gallery</string>
+    <string name="profile_action_camera">Take a photo</string>
+    <string name="profile_action_delete">Delete photo</string>
+    <string name="cd_change_avatar">Change profile photo</string>
+    <string name="cd_profile_photo">Profile photo</string>
+    <string name="profile_crop_title">Crop your photo</string>
+    <string name="profile_crop_hint">Pinch to zoom, drag to move. Whatever\'s in the square is what you get.</string>
+    <string name="profile_crop_confirm">Use this</string>
+
+    <!-- Public user profile -->
+    <string name="user_title">Cat person</string>
+    <string name="user_stat_sightings">Sightings</string>
+    <string name="user_stat_cats">Cats found</string>
+    <string name="user_stat_names">Names given</string>
+    <string name="user_cats">Cats they\'ve found</string>
+    <string name="user_no_cats">No cats yet.</string>
+    <string name="user_err_load">Couldn\'t load that profile.</string>
+    <string name="cd_open_user">View profile</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">Notifications</string>
+    <string name="cd_notifications">Notifications</string>
+    <string name="notif_channel_name">Notifications</string>
+    <string name="notif_liked_name">liked your name for %1$s</string>
+    <string name="notif_added_name">named a cat you found: %1$s</string>
+    <string name="notif_added_review">reviewed a cat you found: %1$s</string>
+    <string name="notif_merge_requested">wants to merge a cat you own: %1$s</string>
+    <string name="notif_merge_resolved">declined your merge request for %1$s</string>
+    <string name="notif_someone">Someone</string>
+    <string name="notif_this_cat">this cat</string>
+    <string name="notif_empty">No notifications yet. Go name some cats.</string>
+    <string name="notif_err_load">Couldn\'t load your notifications.</string>
+
+    <!-- Merge -->
+    <string name="merge_pending_title">Merges waiting on you</string>
+    <string name="merge_into">Merge into this cat</string>
+    <string name="merge_request_sent">Merge request sent.</string>
+    <string name="merge_approved">Cats merged.</string>
+    <string name="merge_rejected">Merge declined.</string>
+    <string name="merge_err">Couldn\'t do that merge.</string>
+    <string name="merge_row">%1$s into %2$s</string>
+
+    <!-- Moderation -->
+    <string name="report_name">Report this name</string>
+    <string name="report_review">Report this review</string>
+    <string name="report_title">Report this?</string>
+    <string name="report_body">Something fishy about this one? Give it a flag and we\'ll take a look.</string>
+    <string name="report_confirm">Report</string>
+    <string name="report_sent">Got it. We\'ll take a look.</string>
+    <string name="report_hidden">That did it — hidden.</string>
+    <string name="report_err">Couldn\'t send that report.</string>
+</resources>

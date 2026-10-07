@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">mpus</string>
+
+    <!-- Navigation -->
+    <string name="tab_map">Peta</string>
+    <string name="tab_snap">Jepret</string>
+    <string name="tab_you">Kamu</string>
+
+    <!-- Common actions / content descriptions -->
+    <string name="action_save">Simpan</string>
+    <string name="action_cancel">Batal</string>
+    <string name="action_done">Selesai</string>
+    <string name="action_retry">Coba lagi</string>
+    <string name="cd_back">Kembali</string>
+    <string name="cd_like">Suka</string>
+
+    <!-- Auth -->
+    <string name="auth_title">mpus</string>
+    <string name="auth_sign_in">Masuk</string>
+    <string name="auth_sign_up">Daftar</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Kata sandi</string>
+    <string name="auth_show">Lihat</string>
+    <string name="auth_hide">Sembunyi</string>
+    <string name="auth_username">Nama pengguna</string>
+    <string name="auth_username_hint">3-30 karakter: huruf, angka, _ .</string>
+    <string name="auth_display_name">Nama panggilan</string>
+    <string name="auth_create_account">Buat akun</string>
+    <string name="auth_err_missing_credentials">Email dan kata sandinya diisi dulu ya.</string>
+    <string name="auth_err_incomplete">Isi semuanya dulu. Kata sandi 8+, nama pengguna 3+.</string>
+    <string name="auth_err_network">Jaringan lagi rewel. Coba lagi.</string>
+
+    <!-- Verify screen (an unverified account is held here after signing in) -->
+    <string name="verify_title">Cek kotak masukmu</string>
+    <string name="verify_body">Kode 6 angka sudah dikirim ke %1$s. Tulis di bawah ini.</string>
+    <string name="verify_code">Kode 6 angka</string>
+    <string name="verify_confirm">Verifikasi</string>
+    <string name="verify_resend">Kirim ulang kode</string>
+    <string name="verify_done">Terverifikasi. Selamat masuk.</string>
+    <string name="verify_err">Gagal. Coba lagi ya.</string>
+
+    <!-- Map -->
+    <string name="map_title">mpus</string>
+    <string name="map_refresh">Segarkan</string>
+    <string name="map_recenter">Ke posisiku</string>
+    <string name="map_no_location">Belum ada lokasi. Nyalakan dulu, lalu coba lagi.</string>
+    <string name="map_unnamed_marker">Kucing tanpa nama</string>
+    <string name="map_unnamed_cat">Kucing ini belum punya nama</string>
+    <string name="map_open_cat">Lihat nama dan fotonya</string>
+    <string name="map_err_load">Peta gagal dimuat.</string>
+    <plurals name="sighting_count">
+        <item quantity="other">%1$d perjumpaan</item>
+    </plurals>
+    <plurals name="sighting_count_around">
+        <item quantity="other">%1$d perjumpaan di sekitar sini</item>
+    </plurals>
+
+    <!-- Cat detail -->
+    <string name="cat_title">Kucing</string>
+    <string name="cat_not_named">Belum diberi nama</string>
+    <string name="cat_photos">Foto</string>
+    <string name="cat_stat_sightings">Perjumpaan</string>
+    <string name="cat_stat_names">Nama</string>
+    <string name="cat_names">Nama</string>
+    <string name="cat_no_names">Belum ada nama. Kamu dulu.</string>
+    <string name="cat_suggest_name">Usulkan nama</string>
+    <string name="cat_meet_to_name">Jepret sendiri kucingnya buat kasih nama. Cuma bisa kasih nama ke kucing yang kamu temui.</string>
+    <string name="cat_save_name">Simpan namaku</string>
+    <string name="cat_by">oleh %1$s</string>
+    <string name="cat_unnamed">Tanpa nama</string>
+    <string name="cat_err_load">Kucing ini gagal dimuat.</string>
+    <string name="cat_name_saved">Nama tersimpan.</string>
+    <string name="cat_err_save_name">Nama itu gagal disimpan.</string>
+    <string name="cat_err_like">Like-nya gagal masuk.</string>
+    <string name="cat_reviews">Ulasan</string>
+    <string name="cat_no_reviews">Belum ada ulasan. Ada pendapat?</string>
+    <string name="cat_review_hint">Sebenarnya kucing ini gimana?</string>
+    <string name="cat_review_rating">Nilai</string>
+    <string name="cat_review_save">Kirim ulasan</string>
+    <string name="cat_review_saved">Ulasan terkirim.</string>
+    <string name="cat_err_review">Ulasan itu gagal dikirim.</string>
+    <string name="cat_review_rating_value">%1$d/10</string>
+    <plurals name="cat_sighting_count">
+        <item quantity="other">%1$d perjumpaan</item>
+    </plurals>
+
+    <!-- Snap / sightings -->
+    <string name="snap_title">Jepret kucing</string>
+    <string name="snap_found">Ketemu kucing?</string>
+    <string name="snap_hint">Jepret dulu. Nanti kami cek, jangan-jangan sudah ada yang kasih nama.</string>
+    <string name="snap_open_camera">Buka kamera</string>
+    <string name="cd_your_cat_photo">Foto kucingmu</string>
+    <string name="snap_locating">Mencari lokasimu…</string>
+    <string name="snap_located">Lokasi terkunci</string>
+    <string name="snap_no_location">Belum ada lokasi</string>
+    <string name="snap_retake">Jepret ulang</string>
+    <string name="snap_identify">Kenali kucing ini</string>
+    <string name="snap_who">Ini siapa?</string>
+    <string name="snap_no_matches">Belum ada yang cocok. Kamu yang kasih nama pertama.</string>
+    <string name="snap_possible">Ada kemungkinan cocok. Kucing yang sama, atau kembaran?</string>
+    <string name="snap_new_cat">Atau bikin kucing baru</string>
+    <string name="snap_name_label">Kasih nama kucing ini</string>
+    <string name="snap_create">Buat kucing baru</string>
+    <string name="snap_similar">%1$d%% mirip</string>
+    <string name="snap_same_cat">Kucing yang sama</string>
+    <string name="snap_view">Lihat</string>
+    <string name="snap_saved_title">Tersimpan di peta</string>
+    <string name="snap_saved_body">Perjumpaan ini sekarang jadi milik kucing itu.</string>
+    <string name="snap_open_cat">Buka kucing</string>
+    <string name="snap_another">Jepret lagi</string>
+    <string name="snap_err_no_photo">Jepret fotonya dulu.</string>
+    <string name="snap_err_no_location">Butuh lokasi dulu.</string>
+    <string name="snap_err_no_fix">Belum dapat lokasi. Nyalakan lokasi, lalu coba lagi.</string>
+    <string name="snap_err_upload">Upload gagal. Coba lagi.</string>
+    <string name="snap_err_no_camera">Akses kamera mati. Izinkan di Pengaturan buat jepret kucing.</string>
+    <string name="snap_linked">Mantap. Kucingnya sudah di peta.</string>
+    <string name="snap_err_resolve">Itu gagal disimpan.</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Kamu</string>
+    <string name="profile_add_photo">Tambah\nfoto</string>
+    <string name="profile_placeholder">-</string>
+    <string name="profile_handle">@%1$s</string>
+    <string name="profile_edit">Ubah profil</string>
+    <string name="profile_sign_out">Keluar</string>
+    <string name="profile_your_sightings">Perjumpaanmu</string>
+    <string name="profile_stat_sightings">Perjumpaan</string>
+    <string name="profile_stat_cats">Kucing</string>
+    <string name="profile_stat_unnamed">Tanpa nama</string>
+    <string name="profile_section_recent">Terbaru</string>
+    <string name="profile_empty">Masih kosong. Yuk jepret kucing.</string>
+    <string name="profile_err_load">Perjumpaanmu gagal dimuat.</string>
+    <string name="profile_updated">Profil diperbarui.</string>
+    <string name="profile_err_save">Itu gagal disimpan.</string>
+    <string name="profile_avatar_done">Keren.</string>
+    <string name="profile_avatar_removed">Foto dihapus.</string>
+    <string name="profile_err_avatar">Foto itu gagal diunggah.</string>
+    <string name="profile_err_avatar_delete">Foto itu gagal dihapus.</string>
+    <string name="profile_photo_actions">Foto profil</string>
+    <string name="profile_action_view">Lihat foto</string>
+    <string name="profile_action_upload">Unggah dari galeri</string>
+    <string name="profile_action_camera">Ambil foto</string>
+    <string name="profile_action_delete">Hapus foto</string>
+    <string name="cd_change_avatar">Ganti foto profil</string>
+    <string name="cd_profile_photo">Foto profil</string>
+    <string name="profile_crop_title">Potong fotomu</string>
+    <string name="profile_crop_hint">Cubit buat zoom, geser buat pindah. Isi kotaknya itulah yang tersimpan.</string>
+    <string name="profile_crop_confirm">Pakai ini</string>
+
+    <!-- Public user profile -->
+    <string name="user_title">Pencinta kucing</string>
+    <string name="user_stat_sightings">Perjumpaan</string>
+    <string name="user_stat_cats">Kucing ditemukan</string>
+    <string name="user_stat_names">Nama diberi</string>
+    <string name="user_cats">Kucing yang dia temui</string>
+    <string name="user_no_cats">Belum ada kucing.</string>
+    <string name="user_err_load">Profil itu gagal dimuat.</string>
+    <string name="cd_open_user">Lihat profil</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">Notifikasi</string>
+    <string name="cd_notifications">Notifikasi</string>
+    <string name="notif_channel_name">Notifikasi</string>
+    <string name="notif_liked_name">menyukai namamu untuk %1$s</string>
+    <string name="notif_added_name">memberi nama kucing yang kamu temui: %1$s</string>
+    <string name="notif_added_review">mengulas kucing yang kamu temui: %1$s</string>
+    <string name="notif_merge_requested">ingin menggabungkan kucing milikmu: %1$s</string>
+    <string name="notif_merge_resolved">menolak permintaan gabungmu untuk %1$s</string>
+    <string name="notif_someone">Seseorang</string>
+    <string name="notif_this_cat">kucing ini</string>
+    <string name="notif_empty">Belum ada notifikasi. Yuk kasih nama kucing.</string>
+    <string name="notif_err_load">Notifikasimu gagal dimuat.</string>
+
+    <!-- Merge -->
+    <string name="merge_pending_title">Gabungan yang menunggu jawabanmu</string>
+    <string name="merge_into">Gabung ke kucing ini</string>
+    <string name="merge_request_sent">Permintaan gabung terkirim.</string>
+    <string name="merge_approved">Kucing digabung.</string>
+    <string name="merge_rejected">Gabungan ditolak.</string>
+    <string name="merge_err">Gabungan itu gagal.</string>
+    <string name="merge_row">%1$s ke %2$s</string>
+
+    <!-- Moderation -->
+    <string name="report_name">Laporkan nama ini</string>
+    <string name="report_review">Laporkan ulasan ini</string>
+    <string name="report_title">Laporkan ini?</string>
+    <string name="report_body">Ada yang aneh? Tandai aja, nanti kami cek.</string>
+    <string name="report_confirm">Laporkan</string>
+    <string name="report_sent">Oke. Kami cek sebentar.</string>
+    <string name="report_hidden">Beres — disembunyikan.</string>
+    <string name="report_err">Laporan itu gagal dikirim.</string>
+</resources>
