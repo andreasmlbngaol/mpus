@@ -51,7 +51,7 @@ android {
         minSdk = 29
         targetSdk = 37
         // A release tag must be "v$versionName"; the release workflow enforces it.
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -72,7 +72,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             if (hasSigning) {
                 signingConfig = signingConfigs.getByName("release")
