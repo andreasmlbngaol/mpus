@@ -207,7 +207,9 @@ is written from the `GOOGLE_SERVICES_JSON` secret before the build.
 
 `.github/workflows/release.yml` builds and publishes the APK on a tag. Pushing a tag `vX.Y.Z`
 runs it, and the workflow refuses to run unless `X.Y.Z` equals `versionName` in
-`app/build.gradle.kts`, so bump `versionName` (and `versionCode`) before tagging.
+`app/build.gradle.kts`, so bump `versionName` (and `versionCode`) before tagging. Release
+builds are minified by R8 and have resource shrinking on, and the workflow uploads the R8
+mapping file as a build artifact so a minified crash stack trace can be read back.
 
 Repository secrets the workflow needs:
 
