@@ -91,7 +91,14 @@ fun MapScreen(vm: MapViewModel, onOpenCat: (String) -> Unit) {
     val unnamed = stringResource(R.string.map_unnamed_marker)
 
     val mapView = remember {
-        Configuration.getInstance().userAgentValue = context.packageName
+        // Tiles download two-at-a-time by default, which is why the first view takes a
+        // moment to fill in. Six parallel fetches plus a bigger queue makes the initial
+        // draw noticeably snappier; osmdroid still respects the tile server's limits.
+        Configuration.getInstance().apply {
+            userAgentValue = context.packageName
+            tileDownloadThreads = 6
+            tileDownloadMaxQueueSize = 80
+        }
         MapView(context).apply {
             setMultiTouchControls(true)
             controller.setZoom(16.0)
@@ -121,6 +128,14 @@ fun MapScreen(vm: MapViewModel, onOpenCat: (String) -> Unit) {
     }
 
     LaunchedEffect(Unit) { vm.startAutoRefresh() }
+
+    // The factory sets the camera before the view is laid out, so the first bounding box
+    // does not exist yet and no MapListener event fires. Report once after layout so the
+    // first load doesn't wait for the user to nudge the map.
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(150)
+        reportViewport(mapView, vm)
+    }
 
     LaunchedEffect(Unit) {
         LocationProvider.current(context)?.let { (lat, lng) ->
@@ -262,7 +277,15 @@ fun MapScreen(vm: MapViewModel, onOpenCat: (String) -> Unit) {
     if (selected != null) {
         val sheetState = rememberBottomSheetState(initialValue = SheetValue.PartiallyExpanded)
         ModalBottomSheet(onDismissRequest = { vm.select(null) }, sheetState = sheetState) {
-            CatSheet(cat = selected, onOpenCat = onOpenCat)
+            CatSheet(
+                cat = selected,
+                onOpenCat = {
+                    // Dismiss before navigating: a sheet left open behind the cat page keeps
+                    // a back press of its own, which is what made back feel stuck.
+                    vm.select(null)
+                    onOpenCat(selected.id)
+                },
+            )
         }
     }
 }
@@ -342,14 +365,14 @@ private fun myLocationDot(context: Context): BitmapDrawable {
  */
 private fun catPin(context: Context, face: Bitmap?, name: String, accent: Int): BitmapDrawable {
     val density = context.resources.displayMetrics.density
-    val faceD = 34f * density
-    val ringD = 3f * density
+    val faceD = 46f * density
+    val ringD = 3.5f * density
     val gapD = 3f * density
     val padD = 4f * density
-    val pointerD = 7f * density
-    val pillPadHD = 7f * density
-    val pillPadVD = 3f * density
-    val labelTextSize = 12f * density
+    val pointerD = 8f * density
+    val pillPadHD = 8f * density
+    val pillPadVD = 4f * density
+    val labelTextSize = 15f * density
 
     val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = 0xFF1B1B1B.toInt()
@@ -358,8 +381,8 @@ private fun catPin(context: Context, face: Bitmap?, name: String, accent: Int): 
         textAlign = Paint.Align.CENTER
     }
     // A plain bold face keeps this bitmap helper free of Compose/Resource plumbing and
-    // reads fine at 12sp; names longer than a few characters are ellipsised.
-    val label = TextUtils.ellipsize(name, textPaint, 34f * density * 3f, TextUtils.TruncateAt.END).toString()
+    // reads fine at 15sp; names longer than a few characters are ellipsised.
+    val label = TextUtils.ellipsize(name, textPaint, faceD * 3.5f, TextUtils.TruncateAt.END).toString()
     val textW = textPaint.measureText(label)
     val fontMetrics = textPaint.fontMetrics
     val textH = fontMetrics.descent - fontMetrics.ascent
@@ -421,7 +444,7 @@ private fun catPin(context: Context, face: Bitmap?, name: String, accent: Int): 
     return BitmapDrawable(context.resources, bmp)
 }
 
-/** Pulls the current bbox off the map and hands it to the VM. */
+/** Pulls the current bbox and zoom off the map and hands them to the VM. */
 private fun reportViewport(mapView: MapView, vm: MapViewModel) {
     val bb = mapView.boundingBox ?: return
     vm.onViewport(
@@ -431,5 +454,6 @@ private fun reportViewport(mapView: MapView, vm: MapViewModel) {
             maxLat = bb.latNorth,
             maxLng = bb.lonEast,
         ),
+        zoom = mapView.zoomLevelDouble,
     )
 }

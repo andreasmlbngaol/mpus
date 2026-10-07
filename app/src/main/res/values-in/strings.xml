@@ -67,6 +67,7 @@
     <string name="cat_suggest_name">Usulkan nama</string>
     <string name="cat_meet_to_name">Jepret sendiri kucingnya buat kasih nama. Cuma bisa kasih nama ke kucing yang kamu temui.</string>
     <string name="cat_save_name">Simpan namaku</string>
+    <string name="cat_you_named">Kamu yang kasih nama \"%1$s\". Masih bisa kok like nama lainnya.</string>
     <string name="cat_by">oleh %1$s</string>
     <string name="cat_unnamed">Tanpa nama</string>
     <string name="cat_err_load">Kucing ini gagal dimuat.</string>
@@ -78,6 +79,7 @@
     <string name="cat_review_hint">Sebenarnya kucing ini gimana?</string>
     <string name="cat_review_rating">Nilai</string>
     <string name="cat_review_save">Kirim ulasan</string>
+    <string name="cat_you_reviewed">Kamu sudah pernah mengulas kucing ini.</string>
     <string name="cat_review_saved">Ulasan terkirim.</string>
     <string name="cat_err_review">Ulasan itu gagal dikirim.</string>
     <string name="cat_review_rating_value">%1$d/10</string>
@@ -95,6 +97,8 @@
     <string name="snap_located">Lokasi terkunci</string>
     <string name="snap_no_location">Belum ada lokasi</string>
     <string name="snap_retake">Jepret ulang</string>
+    <string name="snap_shutter">Ambil foto</string>
+    <string name="snap_close">Tutup kamera</string>
     <string name="snap_identify">Kenali kucing ini</string>
     <string name="snap_who">Ini siapa?</string>
     <string name="snap_no_matches">Belum ada yang cocok. Kamu yang kasih nama pertama.</string>

@@ -69,6 +69,7 @@
     <string name="cat_suggest_name">Suggest a name</string>
     <string name="cat_meet_to_name">Snap this cat yourself to name it. You can only name a cat you\'ve met.</string>
     <string name="cat_save_name">Save my name</string>
+    <string name="cat_you_named">You named this cat \"%1$s\". You can still like the other names.</string>
     <string name="cat_by">by %1$s</string>
     <string name="cat_unnamed">Unnamed</string>
     <string name="cat_err_load">Couldn\'t load this cat.</string>
@@ -80,6 +81,7 @@
     <string name="cat_review_hint">How is this cat, really?</string>
     <string name="cat_review_rating">Rating</string>
     <string name="cat_review_save">Post review</string>
+    <string name="cat_you_reviewed">You already reviewed this cat.</string>
     <string name="cat_review_saved">Review posted.</string>
     <string name="cat_err_review">Couldn\'t post that review.</string>
     <string name="cat_review_rating_value">%1$d/10</string>
@@ -98,6 +100,8 @@
     <string name="snap_located">Location locked in</string>
     <string name="snap_no_location">No location yet</string>
     <string name="snap_retake">Retake</string>
+    <string name="snap_shutter">Take photo</string>
+    <string name="snap_close">Close camera</string>
     <string name="snap_identify">Identify this cat</string>
     <string name="snap_who">Who is this?</string>
     <string name="snap_no_matches">No matches yet. You get to name this cat first.</string>

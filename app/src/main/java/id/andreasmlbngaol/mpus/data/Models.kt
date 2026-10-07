@@ -72,6 +72,8 @@ data class CatName(
     val name: String,
     val likes: Int,
     @SerialName("liked_by_me") val likedByMe: Boolean,
+    /** True when you wrote this name; the composer hides once you have one. */
+    val mine: Boolean = false,
 )
 
 @Immutable
@@ -84,6 +86,8 @@ data class CatReview(
     val rating: Int,
     val likes: Int,
     @SerialName("liked_by_me") val likedByMe: Boolean,
+    /** True when you wrote this review; the composer hides once you have one. */
+    val mine: Boolean = false,
     @SerialName("created_at") val createdAt: String,
 )
 

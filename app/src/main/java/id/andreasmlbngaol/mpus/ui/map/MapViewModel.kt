@@ -36,6 +36,7 @@ class MapViewModel(private val api: ApiClient) : ViewModel() {
     val state: StateFlow<MapUiState> = _state.asStateFlow()
 
     private var last: Bounds? = null
+    private var lastZoom: Double = 0.0
     private var debounce: Job? = null
     private var auto: Job? = null
 
@@ -48,14 +49,20 @@ class MapViewModel(private val api: ApiClient) : ViewModel() {
         auto = viewModelScope.launch {
             while (true) {
                 delay(AutoRefreshMs)
-                last?.let { load(it) }
+                if (lastZoom >= MinZoom) last?.let { load(it) }
             }
         }
     }
 
-    /** Called on every camera move; debounced so panning doesn't hammer the API. */
-    fun onViewport(b: Bounds) {
+    /**
+     * Called on every camera move; debounced so panning doesn't hammer the API. Zoomed-out
+     * viewports are ignored: at city scale the bbox would return hundreds of pins that are
+     * unreadable anyway, so we wait until the user is zoomed in enough to matter.
+     */
+    fun onViewport(b: Bounds, zoom: Double) {
+        lastZoom = zoom
         if (b.maxLat - b.minLat > 5 || b.maxLng - b.minLng > 5) return
+        if (zoom < MinZoom) return
         last = b
         debounce?.cancel()
         debounce = viewModelScope.launch {
@@ -65,7 +72,7 @@ class MapViewModel(private val api: ApiClient) : ViewModel() {
     }
 
     fun refresh() {
-        last?.let { load(it) }
+        if (lastZoom >= MinZoom) last?.let { load(it) }
     }
 
     fun select(marker: CatMarker?) = _state.update { it.copy(selected = marker) }
@@ -88,5 +95,8 @@ class MapViewModel(private val api: ApiClient) : ViewModel() {
 
     private companion object {
         const val AutoRefreshMs = 30_000L
+
+        /** Below this zoom the viewport is too wide to be useful; don't fetch. */
+        const val MinZoom = 13.0
     }
 }

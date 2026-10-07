@@ -2,7 +2,6 @@ package id.andreasmlbngaol.mpus.ui.sighting
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -70,7 +69,6 @@ import id.andreasmlbngaol.mpus.ui.components.MpusTopBar
 import id.andreasmlbngaol.mpus.ui.theme.ShapeCache
 import id.andreasmlbngaol.mpus.ui.theme.SquircleShape
 import id.andreasmlbngaol.mpus.ui.resolve
-import id.andreasmlbngaol.mpus.util.CaptureFiles
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -78,7 +76,7 @@ fun SightingsScreen(vm: SightingsViewModel, onOpenCat: (String) -> Unit) {
     val state by vm.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val snackbar = remember { SnackbarHostState() }
-    var pendingUri by remember { mutableStateOf<Uri?>(null) }
+    var cameraActive by remember { mutableStateOf(false) }
     var hasCamera by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
@@ -88,16 +86,6 @@ fun SightingsScreen(vm: SightingsViewModel, onOpenCat: (String) -> Unit) {
 
     LaunchedEffect(Unit) { vm.toast.collect { snackbar.showSnackbar(it.resolve(context)) } }
 
-    val cameraLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.TakePicture(),
-    ) { ok -> if (ok) pendingUri?.let(vm::onPhotoCaptured) }
-
-    val takePhoto: () -> Unit = {
-        val (_, uri) = CaptureFiles.newImage(context)
-        pendingUri = uri
-        cameraLauncher.launch(uri)
-    }
-
     // Camera permission gate. Requested the first time this screen is shown; once granted
     // the camera opens straight away. A denial just leaves the empty state up so the user
     // can grant it from the button, rather than a dead screen.
@@ -105,19 +93,31 @@ fun SightingsScreen(vm: SightingsViewModel, onOpenCat: (String) -> Unit) {
         ActivityResultContracts.RequestPermission(),
     ) { granted ->
         hasCamera = granted
-        if (granted) takePhoto()
-        else vm.onCameraDenied()
+        if (granted) cameraActive = true else vm.onCameraDenied()
     }
 
     val openCamera: () -> Unit = {
-        if (hasCamera) takePhoto() else cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        if (hasCamera) cameraActive = true else cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
-    // Tapping the Snap tab *is* the action — ask for the camera straight away instead of
+    // Tapping the Snap tab *is* the action — open the camera straight away instead of
     // showing a page whose only job is to hold one button. The hero below stays as the
-    // recovery state for when the camera is cancelled or unavailable.
+    // recovery state for when the camera is unavailable.
     LaunchedEffect(Unit) {
         if (state.photoUri == null) openCamera()
+    }
+
+    // The camera takes over the whole screen while it is up: a square viewfinder with one
+    // shutter, no chrome competing with it.
+    if (cameraActive && state.photoUri == null) {
+        CameraCapture(
+            onCaptured = {
+                cameraActive = false
+                vm.onPhotoCaptured(it)
+            },
+            onFailed = { cameraActive = false },
+        )
+        return
     }
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()

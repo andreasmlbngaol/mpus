@@ -337,8 +337,23 @@ private fun Detail(
 
         Spacer(Modifier.height(24.dp))
         // Naming and reviewing are for people who've actually met the cat — you can't
-        // judge one you only saw on the map.
-        if (detail.canContribute) {
+        // judge one you only saw on the map. Once you've named it, the composer goes away;
+        // you can still like the other names on the list above.
+        val myName = detail.names.firstOrNull { it.mine }
+        if (myName != null) {
+            Surface(
+                shape = ShapeCache.smooth18,
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    stringResource(R.string.cat_you_named, myName.name),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                )
+            }
+        } else if (detail.canContribute) {
             ExpressiveField(
                 value = name,
                 onValueChange = { name = it },
@@ -368,9 +383,20 @@ private fun Detail(
             style = MaterialTheme.typography.titleLargeEmphasized,
         )
         Spacer(Modifier.height(12.dp))
-        if (detail.canContribute) {
-            ReviewComposer(enabled = !busy, onSubmit = onAddReview)
-            Spacer(Modifier.height(16.dp))
+        val myReview = detail.reviews.firstOrNull { it.mine }
+        when {
+            myReview != null -> {
+                Text(
+                    stringResource(R.string.cat_you_reviewed),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Spacer(Modifier.height(12.dp))
+            }
+            detail.canContribute -> {
+                ReviewComposer(enabled = !busy, onSubmit = onAddReview)
+                Spacer(Modifier.height(16.dp))
+            }
         }
         if (detail.reviews.isEmpty()) {
             Text(
