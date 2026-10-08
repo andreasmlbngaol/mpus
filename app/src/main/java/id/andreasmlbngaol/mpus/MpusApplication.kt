@@ -3,7 +3,6 @@ package id.andreasmlbngaol.mpus
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import id.andreasmlbngaol.mpus.di.AppModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinApplication
 import org.koin.plugin.module.dsl.startKoin

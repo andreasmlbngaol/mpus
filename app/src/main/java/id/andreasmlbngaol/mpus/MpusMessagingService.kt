@@ -8,7 +8,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import id.andreasmlbngaol.mpus.data.PushRegistrar
+import id.andreasmlbngaol.mpus.core.domain.repository.PushRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,7 +29,7 @@ import org.koin.core.component.inject
  * replacement, but they are still the only hooks — hence the suppressions.
  */
 class MpusMessagingService : FirebaseMessagingService(), KoinComponent {
-    private val registrar: PushRegistrar by inject()
+    private val registrar: PushRepository by inject()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     @Deprecated("Deprecated in Java")

@@ -1,9 +1,11 @@
 package id.andreasmlbngaol.mpus
 
-import id.andreasmlbngaol.mpus.data.CatMarker
-import id.andreasmlbngaol.mpus.data.Page
-import id.andreasmlbngaol.mpus.data.UserProfile
-import id.andreasmlbngaol.mpus.ui.user.UserViewModel
+import id.andreasmlbngaol.mpus.core.domain.model.CatMarker
+import id.andreasmlbngaol.mpus.core.domain.model.Page
+import id.andreasmlbngaol.mpus.profile.domain.model.UserProfile
+import id.andreasmlbngaol.mpus.profile.domain.usecase.UserUseCase
+import id.andreasmlbngaol.mpus.profile.ui.UserUiEvent
+import id.andreasmlbngaol.mpus.profile.ui.UserViewModel
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -16,10 +18,12 @@ class UserViewModelTest {
 
     @get:Rule val main = MainDispatcherRule()
 
+    private fun vm(repo: FakeUserRepository) = UserViewModel(UserUseCase(repo), "u1")
+
     @Test
     fun `load populates the public profile`() = runTest {
-        val api = FakeApi(onUserProfile = { _, _ -> profile() })
-        val vm = UserViewModel(api, "u1")
+        val repo = FakeUserRepository(onProfile = { _, _ -> profile() })
+        val vm = vm(repo)
         advanceUntilIdle()
 
         assertEquals("Sana", vm.state.value.profile?.nickname)
@@ -29,8 +33,8 @@ class UserViewModelTest {
 
     @Test
     fun `load failure surfaces an error`() = runTest {
-        val api = FakeApi(onUserProfile = { _, _ -> throw RuntimeException("gone") })
-        val vm = UserViewModel(api, "u1")
+        val repo = FakeUserRepository(onProfile = { _, _ -> throw RuntimeException("gone") })
+        val vm = vm(repo)
         advanceUntilIdle()
 
         assertNotNull(vm.state.value.error)
@@ -39,15 +43,15 @@ class UserViewModelTest {
 
     @Test
     fun `loadMore appends the next page of cats`() = runTest {
-        val api = FakeApi(onUserProfile = { _, cursor ->
+        val repo = FakeUserRepository(onProfile = { _, cursor ->
             if (cursor == null) profile(cats = Page(listOf(marker("c1")), nextCursor = "cur1"))
             else profile(cats = Page(listOf(marker("c2")), nextCursor = null))
         })
-        val vm = UserViewModel(api, "u1")
+        val vm = vm(repo)
         advanceUntilIdle()
         assertEquals(listOf("c1"), vm.state.value.cats.map { it.id })
 
-        vm.loadMore()
+        vm.onEvent(UserUiEvent.LoadMore)
         advanceUntilIdle()
         assertEquals(listOf("c1", "c2"), vm.state.value.cats.map { it.id })
     }

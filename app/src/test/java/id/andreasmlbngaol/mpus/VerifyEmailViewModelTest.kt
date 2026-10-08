@@ -1,9 +1,11 @@
 package id.andreasmlbngaol.mpus
 
-import id.andreasmlbngaol.mpus.data.PushRegistrar
-import id.andreasmlbngaol.mpus.data.Session
-import id.andreasmlbngaol.mpus.data.User
-import id.andreasmlbngaol.mpus.ui.auth.VerifyEmailViewModel
+import id.andreasmlbngaol.mpus.auth.domain.usecase.AuthUseCase
+import id.andreasmlbngaol.mpus.auth.ui.VerifyEmailViewModel
+import id.andreasmlbngaol.mpus.auth.ui.VerifyUiEvent
+import id.andreasmlbngaol.mpus.core.domain.model.User
+import id.andreasmlbngaol.mpus.core.domain.repository.SessionRepository
+import id.andreasmlbngaol.mpus.core.domain.usecase.SessionUseCase
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -20,22 +22,18 @@ class VerifyEmailViewModelTest {
     private val unverified =
         User(id = "u1", username = "sana", nickname = "Sana", email = "sana@example.com", emailVerified = false)
 
-    /** Avoids Firebase entirely: only the "forget this device" call matters here. */
-    private class FakeRegistrar : PushRegistrar(FakeApi(), FakeSession()) {
-        override suspend fun unregisterCurrent() = Unit
-    }
-
-    private fun vm(api: FakeApi, session: Session) = VerifyEmailViewModel(api, session, FakeRegistrar())
+    private fun vm(repo: FakeAuthRepository, session: SessionRepository) =
+        VerifyEmailViewModel(AuthUseCase(repo), SessionUseCase(session), FakePushRepository())
 
     @Test
     fun `verify flips the session user and clears busy`() = runTest {
         val session = FakeSession(token = "tok", user = unverified)
         val verified = unverified.copy(emailVerified = true)
-        val api = FakeApi(onVerifyEmail = { verified })
-        val vm = vm(api, session)
+        val repo = FakeAuthRepository(onVerifyEmail = { verified })
+        val vm = vm(repo, session)
 
-        vm.onCode("123456")
-        vm.verify()
+        vm.onEvent(VerifyUiEvent.CodeChanged("123456"))
+        vm.onEvent(VerifyUiEvent.Verify)
         advanceUntilIdle()
 
         assertEquals(true, session.user.value?.emailVerified)
@@ -46,11 +44,11 @@ class VerifyEmailViewModelTest {
     @Test
     fun `resend uses the signed-in email`() = runTest {
         var sentTo: String? = null
-        val api = FakeApi(onResendVerification = { email -> sentTo = email; "on its way" })
+        val repo = FakeAuthRepository(onResend = { email -> sentTo = email; "on its way" })
         val session = FakeSession(token = "tok", user = unverified)
-        val vm = vm(api, session)
+        val vm = vm(repo, session)
 
-        vm.resend()
+        vm.onEvent(VerifyUiEvent.Resend)
         advanceUntilIdle()
 
         assertEquals("sana@example.com", sentTo)
@@ -60,9 +58,9 @@ class VerifyEmailViewModelTest {
     @Test
     fun `logout clears the session`() = runTest {
         val session = FakeSession(token = "tok", user = unverified)
-        val vm = vm(FakeApi(), session)
+        val vm = vm(FakeAuthRepository(), session)
 
-        vm.logout()
+        vm.onEvent(VerifyUiEvent.Logout)
         advanceUntilIdle()
 
         assertTrue(session.cleared)

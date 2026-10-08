@@ -1,7 +1,7 @@
 package id.andreasmlbngaol.mpus
 
-import id.andreasmlbngaol.mpus.data.PushRegistrar
-import id.andreasmlbngaol.mpus.data.User
+import id.andreasmlbngaol.mpus.core.data.push.PushRegistrar
+import id.andreasmlbngaol.mpus.core.domain.model.User
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -14,8 +14,8 @@ class PushRegistrarTest {
     @Test
     fun `a rotated token is claimed when signed in`() = runTest {
         var registered: Pair<String, String>? = null
-        val api = FakeApi(onRegisterDevice = { t, p -> registered = t to p })
-        val registrar = PushRegistrar(api, FakeSession(token = "tok", user = user))
+        val devices = FakeDeviceRepository(onRegister = { t, p -> registered = t to p })
+        val registrar = PushRegistrar(devices, FakeSession(token = "tok", user = user))
 
         registrar.onTokenRefreshed("fcm-abc")
 
@@ -25,8 +25,8 @@ class PushRegistrarTest {
     @Test
     fun `a rotated token is ignored while signed out`() = runTest {
         var registered: String? = null
-        val api = FakeApi(onRegisterDevice = { t, _ -> registered = t })
-        val registrar = PushRegistrar(api, FakeSession(token = null))
+        val devices = FakeDeviceRepository(onRegister = { t, _ -> registered = t })
+        val registrar = PushRegistrar(devices, FakeSession(token = null))
 
         registrar.onTokenRefreshed("fcm-abc")
 

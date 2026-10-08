@@ -1,7 +1,10 @@
 package id.andreasmlbngaol.mpus
 
-import id.andreasmlbngaol.mpus.data.User
-import id.andreasmlbngaol.mpus.ui.profile.EditProfileViewModel
+import id.andreasmlbngaol.mpus.core.domain.model.User
+import id.andreasmlbngaol.mpus.core.domain.usecase.SessionUseCase
+import id.andreasmlbngaol.mpus.profile.domain.usecase.ProfileUseCase
+import id.andreasmlbngaol.mpus.profile.ui.EditProfileUiEvent
+import id.andreasmlbngaol.mpus.profile.ui.EditProfileViewModel
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -16,9 +19,12 @@ class EditProfileViewModelTest {
 
     private val user = User(id = "u1", username = "sana", nickname = "Sana")
 
+    private fun vm(repo: FakeProfileRepository, session: FakeSession = FakeSession(user = user)) =
+        EditProfileViewModel(ProfileUseCase(repo), SessionUseCase(session))
+
     @Test
     fun `seeds the fields from the cached user`() = runTest {
-        val vm = EditProfileViewModel(FakeApi(), FakeSession(user = user))
+        val vm = vm(FakeProfileRepository())
 
         assertEquals("sana", vm.state.value.username)
         assertEquals("Sana", vm.state.value.nickname)
@@ -28,12 +34,12 @@ class EditProfileViewModelTest {
     fun `save trims, patches through the api and marks saved`() = runTest {
         val renamed = user.copy(username = "sana_b", nickname = "Sana B")
         val session = FakeSession(user = user)
-        val api = FakeApi(onPatchMe = { _, _ -> renamed })
-        val vm = EditProfileViewModel(api, session)
+        val repo = FakeProfileRepository(onUpdateProfile = { _, _ -> renamed })
+        val vm = vm(repo, session)
 
-        vm.onNickname("  Sana B  ")
-        vm.onUsername("  sana_b  ")
-        vm.save()
+        vm.onEvent(EditProfileUiEvent.NicknameChanged("  Sana B  "))
+        vm.onEvent(EditProfileUiEvent.UsernameChanged("  sana_b  "))
+        vm.onEvent(EditProfileUiEvent.Save)
         advanceUntilIdle()
 
         assertEquals(renamed, session.user.value)
@@ -43,10 +49,10 @@ class EditProfileViewModelTest {
 
     @Test
     fun `a failed save clears busy and does not mark saved`() = runTest {
-        val api = FakeApi(onPatchMe = { _, _ -> throw RuntimeException("nope") })
-        val vm = EditProfileViewModel(api, FakeSession(user = user))
+        val repo = FakeProfileRepository(onUpdateProfile = { _, _ -> throw RuntimeException("nope") })
+        val vm = vm(repo)
 
-        vm.save()
+        vm.onEvent(EditProfileUiEvent.Save)
         advanceUntilIdle()
 
         assertFalse(vm.state.value.saved)

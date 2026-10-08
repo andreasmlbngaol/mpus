@@ -1,9 +1,11 @@
 package id.andreasmlbngaol.mpus
 
-import id.andreasmlbngaol.mpus.data.AppNotification
-import id.andreasmlbngaol.mpus.data.MergeRequest
-import id.andreasmlbngaol.mpus.data.Page
-import id.andreasmlbngaol.mpus.ui.notifications.NotificationsViewModel
+import id.andreasmlbngaol.mpus.core.domain.model.MergeRequest
+import id.andreasmlbngaol.mpus.core.domain.model.Page
+import id.andreasmlbngaol.mpus.notifications.domain.model.AppNotification
+import id.andreasmlbngaol.mpus.notifications.domain.usecase.NotificationsUseCase
+import id.andreasmlbngaol.mpus.notifications.ui.NotificationsUiEvent
+import id.andreasmlbngaol.mpus.notifications.ui.NotificationsViewModel
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -16,6 +18,8 @@ import org.junit.Test
 class NotificationsViewModelTest {
 
     @get:Rule val main = MainDispatcherRule()
+
+    private fun vm(repo: FakeNotificationsRepository) = NotificationsViewModel(NotificationsUseCase(repo))
 
     private fun notif(id: String, kind: String = "name_liked") = AppNotification(
         id = id,
@@ -37,11 +41,11 @@ class NotificationsViewModelTest {
 
     @Test
     fun `load populates inbox and pending merges`() = runTest {
-        val api = FakeApi(
+        val repo = FakeNotificationsRepository(
             onNotifications = { Page(listOf(notif("n1"), notif("n2")), null) },
             onPendingMerges = { listOf(merge("m1")) },
         )
-        val vm = NotificationsViewModel(api)
+        val vm = vm(repo)
         advanceUntilIdle()
 
         assertEquals(2, vm.state.value.items.size)
@@ -52,8 +56,8 @@ class NotificationsViewModelTest {
 
     @Test
     fun `load failure surfaces an error`() = runTest {
-        val api = FakeApi(onNotifications = { throw RuntimeException("boom") })
-        val vm = NotificationsViewModel(api)
+        val repo = FakeNotificationsRepository(onNotifications = { throw RuntimeException("boom") })
+        val vm = vm(repo)
         advanceUntilIdle()
 
         assertTrue(vm.state.value.error != null)
@@ -62,14 +66,14 @@ class NotificationsViewModelTest {
 
     @Test
     fun `loadMore appends the next page`() = runTest {
-        val api = FakeApi(
+        val repo = FakeNotificationsRepository(
             onNotifications = { cursor ->
                 if (cursor == null) Page(listOf(notif("n1")), "next") else Page(listOf(notif("n2")), null)
             },
         )
-        val vm = NotificationsViewModel(api)
+        val vm = vm(repo)
         advanceUntilIdle()
-        vm.loadMore()
+        vm.onEvent(NotificationsUiEvent.LoadMore)
         advanceUntilIdle()
 
         assertEquals(listOf("n1", "n2"), vm.state.value.items.map { it.id })
@@ -78,14 +82,14 @@ class NotificationsViewModelTest {
 
     @Test
     fun `approve removes the merge from the list`() = runTest {
-        val api = FakeApi(
+        val repo = FakeNotificationsRepository(
             onNotifications = { Page() },
             onPendingMerges = { listOf(merge("m1"), merge("m2")) },
             onApproveMerge = { merge(it).copy(status = "merged") },
         )
-        val vm = NotificationsViewModel(api)
+        val vm = vm(repo)
         advanceUntilIdle()
-        vm.approve("m1")
+        vm.onEvent(NotificationsUiEvent.Approve("m1"))
         advanceUntilIdle()
 
         assertEquals(listOf("m2"), vm.state.value.merges.map { it.id })
@@ -93,14 +97,14 @@ class NotificationsViewModelTest {
 
     @Test
     fun `reject removes the merge from the list`() = runTest {
-        val api = FakeApi(
+        val repo = FakeNotificationsRepository(
             onNotifications = { Page() },
             onPendingMerges = { listOf(merge("m1")) },
             onRejectMerge = { },
         )
-        val vm = NotificationsViewModel(api)
+        val vm = vm(repo)
         advanceUntilIdle()
-        vm.reject("m1")
+        vm.onEvent(NotificationsUiEvent.Reject("m1"))
         advanceUntilIdle()
 
         assertTrue(vm.state.value.merges.isEmpty())

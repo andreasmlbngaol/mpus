@@ -19,3 +19,30 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# ---- kotlinx.serialization ----
+# Keep the generated serializers for every @Serializable type. R8 cannot see the
+# generated companion/serializer the plugin wires in reflectively.
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.**
+-keepclassmembers class kotlinx.serialization.json.** {
+    *** Companion;
+}
+-keepclasseswithmembers class kotlinx.serialization.json.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+-keep,includedescriptorclasses class id.andreasmlbngaol.mpus.**$$serializer { *; }
+-keepclassmembers class id.andreasmlbngaol.mpus.** {
+    *** Companion;
+}
+-keepclasseswithmembers class id.andreasmlbngaol.mpus.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+# ---- Ktor 3 ----
+# Ktor uses a lot of reflection / ServiceLoader for engines, plugins and converters.
+-keep class io.ktor.** { *; }
+-keep class kotlinx.coroutines.** { *; }
+-dontwarn io.ktor.**
+-dontwarn org.slf4j.**
+-dontwarn java.lang.management.**

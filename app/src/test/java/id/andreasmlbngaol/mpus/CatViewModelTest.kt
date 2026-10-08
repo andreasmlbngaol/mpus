@@ -1,12 +1,12 @@
 package id.andreasmlbngaol.mpus
 
-import id.andreasmlbngaol.mpus.data.CatDetail
-import id.andreasmlbngaol.mpus.data.CatName
-import id.andreasmlbngaol.mpus.data.CatReview
-import id.andreasmlbngaol.mpus.data.LikeData
-import id.andreasmlbngaol.mpus.data.MergeRequest
-import id.andreasmlbngaol.mpus.data.ReportResult
-import id.andreasmlbngaol.mpus.ui.cat.CatViewModel
+import id.andreasmlbngaol.mpus.cat.domain.model.CatDetail
+import id.andreasmlbngaol.mpus.cat.domain.model.CatName
+import id.andreasmlbngaol.mpus.cat.domain.model.CatReview
+import id.andreasmlbngaol.mpus.cat.domain.usecase.CatUseCase
+import id.andreasmlbngaol.mpus.cat.ui.CatUiEvent
+import id.andreasmlbngaol.mpus.cat.ui.CatViewModel
+import id.andreasmlbngaol.mpus.core.domain.model.MergeRequest
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -20,10 +20,12 @@ class CatViewModelTest {
 
     @get:Rule val main = MainDispatcherRule()
 
+    private fun vm(repo: FakeCatRepository) = CatViewModel(CatUseCase(repo), "c1")
+
     @Test
     fun `load populates detail`() = runTest {
-        val api = FakeApi(onCatDetail = { detail(names = listOf(name("n1", likes = 2))) })
-        val vm = CatViewModel(api, "c1")
+        val repo = FakeCatRepository(onDetail = { detail(names = listOf(name("n1", likes = 2))) })
+        val vm = vm(repo)
         advanceUntilIdle()
 
         assertEquals(1, vm.state.value.detail?.names?.size)
@@ -32,8 +34,8 @@ class CatViewModelTest {
 
     @Test
     fun `load failure surfaces an error`() = runTest {
-        val api = FakeApi(onCatDetail = { throw RuntimeException("gone") })
-        val vm = CatViewModel(api, "c1")
+        val repo = FakeCatRepository(onDetail = { throw RuntimeException("gone") })
+        val vm = vm(repo)
         advanceUntilIdle()
 
         assertNotNull(vm.state.value.error)
@@ -43,14 +45,14 @@ class CatViewModelTest {
     @Test
     fun `addName ignores blank input without a call`() = runTest {
         var called = false
-        val api = FakeApi(
-            onCatDetail = { detail() },
+        val repo = FakeCatRepository(
+            onDetail = { detail() },
             onSetName = { _, _ -> called = true; detail() },
         )
-        val vm = CatViewModel(api, "c1")
+        val vm = vm(repo)
         advanceUntilIdle()
 
-        vm.addName("   ")
+        vm.onEvent(CatUiEvent.NameSubmitted("   "))
         advanceUntilIdle()
 
         assertFalse(called)
@@ -59,14 +61,14 @@ class CatViewModelTest {
     @Test
     fun `addName trims and refreshes the detail`() = runTest {
         var sent: String? = null
-        val api = FakeApi(
-            onCatDetail = { detail() },
+        val repo = FakeCatRepository(
+            onDetail = { detail() },
             onSetName = { _, n -> sent = n; detail(names = listOf(name("n1", likes = 1))) },
         )
-        val vm = CatViewModel(api, "c1")
+        val vm = vm(repo)
         advanceUntilIdle()
 
-        vm.addName("  Milo  ")
+        vm.onEvent(CatUiEvent.NameSubmitted("  Milo  "))
         advanceUntilIdle()
 
         assertEquals("Milo", sent)
@@ -77,15 +79,15 @@ class CatViewModelTest {
     @Test
     fun `toggleLike refetches the detail`() = runTest {
         var refetches = 0
-        val api = FakeApi(
-            onCatDetail = { refetches++; detail(names = listOf(name("n1", likes = refetches))) },
-            onLike = { LikeData(true) },
+        val repo = FakeCatRepository(
+            onDetail = { refetches++; detail(names = listOf(name("n1", likes = refetches))) },
+            onLikeName = { },
         )
-        val vm = CatViewModel(api, "c1")
+        val vm = vm(repo)
         advanceUntilIdle()
         assertEquals(1, refetches)
 
-        vm.toggleLike("n1")
+        vm.onEvent(CatUiEvent.NameLiked("n1"))
         advanceUntilIdle()
 
         // One for init, one for the refresh after the like.
@@ -96,14 +98,14 @@ class CatViewModelTest {
     @Test
     fun `addReview ignores blank bodies`() = runTest {
         var called = false
-        val api = FakeApi(
-            onCatDetail = { detail() },
+        val repo = FakeCatRepository(
+            onDetail = { detail() },
             onSetReview = { _, _, _ -> called = true; detail() },
         )
-        val vm = CatViewModel(api, "c1")
+        val vm = vm(repo)
         advanceUntilIdle()
 
-        vm.addReview("  ", 8)
+        vm.onEvent(CatUiEvent.ReviewSubmitted("  ", 8))
         advanceUntilIdle()
 
         assertFalse(called)
@@ -111,14 +113,14 @@ class CatViewModelTest {
 
     @Test
     fun `a failed write clears busy and reports it`() = runTest {
-        val api = FakeApi(
-            onCatDetail = { detail() },
+        val repo = FakeCatRepository(
+            onDetail = { detail() },
             onSetName = { _, _ -> throw RuntimeException("no") },
         )
-        val vm = CatViewModel(api, "c1")
+        val vm = vm(repo)
         advanceUntilIdle()
 
-        vm.addName("Milo")
+        vm.onEvent(CatUiEvent.NameSubmitted("Milo"))
         advanceUntilIdle()
 
         assertFalse(vm.state.value.busy)
@@ -127,15 +129,15 @@ class CatViewModelTest {
     @Test
     fun `report refetches when the item gets hidden`() = runTest {
         var refetches = 0
-        val api = FakeApi(
-            onCatDetail = { refetches++; detail(names = listOf(name("n1", likes = 1))) },
-            onReport = { _, _, _ -> ReportResult(hidden = true) },
+        val repo = FakeCatRepository(
+            onDetail = { refetches++; detail(names = listOf(name("n1", likes = 1))) },
+            onReport = { _, _ -> true },
         )
-        val vm = CatViewModel(api, "c1")
+        val vm = vm(repo)
         advanceUntilIdle()
         assertEquals(1, refetches)
 
-        vm.report("name", "n1")
+        vm.onEvent(CatUiEvent.Report("name", "n1"))
         advanceUntilIdle()
 
         // Hidden content must drop out of the list, so a refetch is required.
@@ -145,14 +147,14 @@ class CatViewModelTest {
     @Test
     fun `report does not refetch when nothing was hidden yet`() = runTest {
         var refetches = 0
-        val api = FakeApi(
-            onCatDetail = { refetches++; detail() },
-            onReport = { _, _, _ -> ReportResult(hidden = false) },
+        val repo = FakeCatRepository(
+            onDetail = { refetches++; detail() },
+            onReport = { _, _ -> false },
         )
-        val vm = CatViewModel(api, "c1")
+        val vm = vm(repo)
         advanceUntilIdle()
 
-        vm.report("review", "r1")
+        vm.onEvent(CatUiEvent.Report("review", "r1"))
         advanceUntilIdle()
 
         assertEquals(1, refetches)
@@ -161,14 +163,14 @@ class CatViewModelTest {
     @Test
     fun `mergeInto sends the target and surfaces an instant merge`() = runTest {
         var target: String? = null
-        val api = FakeApi(
-            onCatDetail = { detail() },
+        val repo = FakeCatRepository(
+            onDetail = { detail() },
             onRequestMerge = { _, t -> target = t; MergeRequest("m1", "c1", t, "Milo", "Kitty", "u1", "merged") },
         )
-        val vm = CatViewModel(api, "c1")
+        val vm = vm(repo)
         advanceUntilIdle()
 
-        vm.mergeInto("c2")
+        vm.onEvent(CatUiEvent.MergeInto("c2"))
         advanceUntilIdle()
 
         assertEquals("c2", target)
